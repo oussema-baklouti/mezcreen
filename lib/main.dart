@@ -1,24 +1,28 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:mezcreen/env.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'package:mezcreen/sampleData.dart';
+import 'package:mezcreen/utils/utils.dart';
+import 'package:mezcreen/views/home_page_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await checkForTestData();
+  // await checkForTestData();
   runApp(const MyApp());
 }
 
+/*
 Future<void> checkForTestData() async {
   DataSnapshot dataSnapshot =
       await FirebaseDatabase.instance.ref().child(rootNode).get();
   if (dataSnapshot.value != null) return;
   await FirebaseDatabase.instance.ref().child(rootNode).set(data);
 }
-
+*/
 FirebaseDatabase database = FirebaseDatabase.instance;
 
 class MyApp extends StatelessWidget {
@@ -28,10 +32,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: RoomsPage(),
-    );
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        scrollBehavior: MyCustomScrollBehavior(),
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: HomeScreen(),
+          ),
+        ));
   }
 }
 
@@ -43,18 +55,25 @@ class RoomsPage extends StatefulWidget {
 }
 
 class _RoomsPageState extends State<RoomsPage> {
+  late StreamController<DataSnapshot> _roomsController;
+  @override
+  void initState() {
+    super.initState();
+    _roomsController = StreamController<DataSnapshot>();
+    FirebaseDatabase.instance.ref().child(rootNode).onValue.listen((event) {
+      _roomsController.add(event.snapshot);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Rooms")),
       body: DefaultTextStyle(
-        style: Theme.of(context).textTheme.displayMedium!,
+        style: Theme.of(context).textTheme.headline4!,
         textAlign: TextAlign.center,
-        child: FutureBuilder<DataSnapshot>(
-          future: FirebaseDatabase.instance
-              .ref()
-              .child(rootNode)
-              .get(), // a previously-obtained Future<String> or null
+        child: StreamBuilder<DataSnapshot>(
+          stream: _roomsController.stream,
           builder:
               (BuildContext context, AsyncSnapshot<DataSnapshot> snapshot) {
             List<Widget> children = <Widget>[];
@@ -72,7 +91,7 @@ class _RoomsPageState extends State<RoomsPage> {
                         ),
                       );
                     },
-                    child: Text(value['name'])));
+                    child: Text(value['name']!)));
               });
             } else if (snapshot.hasError) {
               children = <Widget>[
@@ -112,6 +131,7 @@ class _RoomsPageState extends State<RoomsPage> {
   }
 }
 
+// ignore: must_be_immutable
 class DevicesPage extends StatefulWidget {
   String roomKey;
   dynamic roomValue;
