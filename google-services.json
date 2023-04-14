@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "558375779458",
+    "project_id": "mezcreen-ad3ac",
+    "storage_bucket": "mezcreen-ad3ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:558375779458:android:94ccfcbd01e9ef88a8889b",
+        "android_client_info": {
+          "package_name": "mezcreen.appspot.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "558375779458-3j5ofm58ivo04mjj7r5c0telio821btf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvRl-lPNVlHbIZCqX0BLO-WTRrT88uEsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558375779458-3j5ofm58ivo04mjj7r5c0telio821btf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
